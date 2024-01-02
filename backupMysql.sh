@@ -1,40 +1,44 @@
-#!/bin/bash -x
+#!/bin/bash
 ###########################################
 # Fonction : MYSQL Database backup script
 #
 # Version : 1.5
-# Last modification : 03/12/2012
+# Last modification : 02/01/2024
 # Auteur : AGNEL Eric ( eric.agnel@gmail.com )
 ###########################################
-
-
-
 
 launchHelp=0 # initialise help to false
 
 # Base directories
-logPath="/var/log/$0.log"
-savePath="/var/local/dumps/"
+# logPath="/var/log/$0.log"
+logPath="./output/$0.log"
+# savePath="/var/local/dumps/"
+savePath="./output/"
 
 # Print the help
 getHelp()
 {
-	echo "Script options : backupMysql.sh -u:XXX "
-    echo "-h	- Print this help dialog."
-	echo "-p	- Define the password to use for the database connection. ( -p:PASSWORD )"
-	echo "-u	- Define the username to use for the connection. ( -u:USER )"
-	echo "-db	- Define the database name to backup. All databases will be exported if empty ( -db:DATABASENAME )"
-	echo "-log	- Define the path to the log file. ( -log:LOGPATH )"
-	echo "-s	- Define the path for the backup directory. ( -s:SAVEPATH )"
-	echo ""
-	echo "All arguments are optional except for the user. The minimum command is backupMysql.sh -u:XXX"
+	help=$(cat <<-STOP
+	Script options : backupMysql.sh -u:XXX 
+    -h	- Print this help dialog.
+	-p	- Define the password to use for the database connection. ( -p:PASSWORD )
+	-u	- Define the username to use for the connection. ( -u:USER )
+	-db	- Define the database name to backup. All databases will be exported if empty ( -db:DATABASENAME )
+	-log	- Define the path to the log file. ( -log:LOGPATH )
+	-s	- Define the path for the backup directory. ( -s:SAVEPATH )
+	
+	All arguments are optional except for the user. The minimum command is backupMysql.sh -u:XXX
+STOP
+	)
+	
+	echo -e $help
 }
 
 if [ $# -eq 0 ]
 then
 	echo "No arguments provided. You must speficy at least the user to use for the connection." >> $logPath
 	echo ""
-	getHelp
+	# getHelp
 else
 	# First check if the log arguments is set
 	for args in "$@"
@@ -83,7 +87,7 @@ else
 				mysqlCommandPass="-p$password"
 				mysqldCommandPass="--password=$password"
             else
-                echo "$(date "+%d-%m-%Y %H:%M") - No password provided, connection will be made without one." >> $loPath
+                echo "$(date "+%d-%m-%Y %H:%M") - No password provided, connection will be made without one." >> $logPath
 				mysqlCommandPass=""
 				mysqldCommandPass=""
             fi
